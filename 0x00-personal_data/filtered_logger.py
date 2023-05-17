@@ -69,3 +69,26 @@ def get_db() -> connection.MySQLConnection:
                                            host=db_host,
                                            database=db_name)
     return connector
+
+
+def main() -> None:
+    '''takes no arguments and returns nothing'''
+
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('SELECT * FROM users;')
+
+    headers = [field[0] for field in cursor.description]
+    logger = get_logger()
+
+    for row in cursor:
+        info_answer = ''
+        for x, y in zip(row, headers):
+            info_answer += f'{y}={(x)}; '
+        logger.info(info_answer)
+    cursor.close()
+    db.close()
+
+
+if __name__ == '__main__':
+    main()
